@@ -6,13 +6,14 @@ function Balance() {
   const [balance, setBalance]= useState("");
   const [idValue, setIdValue] =useState("");
   const [symbol, setSymbol] = useState("");
+  const [isHidden, setIsHidden]= useState(true);
   async function handleClick() {
     const principalId= Principal.fromText(idValue);
     const balanceResult =await token.balanceOf(principalId);
     const currencySymbol=await token.getSymbol();
     setBalance(balanceResult.toLocaleString());
-    setSymbol(currencySymbol.toLocaleString());
-    // console.log(balance);
+    setSymbol(currencySymbol);
+    setIsHidden(false);
   }
 
 
@@ -36,7 +37,7 @@ function Balance() {
           Check Balance
         </button>
       </p>
-      <p>This account has a balance of $ {balance} {symbol}. </p>
+      <p hidden={isHidden}>This account has a balance of $ {balance} {symbol}. </p>
     </div>
   );
 }
