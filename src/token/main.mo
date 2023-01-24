@@ -36,4 +36,23 @@ actor Token {
         };
     };
 
+    public shared(msg) func transfer(to: Principal, amount: Nat): async Text{
+
+        var balanceFrom: Nat=await balanceOf(msg.caller);
+        var balanceTo:Nat= await balanceOf(to);
+        Debug.print(debug_show(balanceFrom));
+        Debug.print(debug_show(balanceTo));
+        if(balanceFrom > amount){
+            balanceFrom:=balanceFrom-amount;
+            balanceTo:=balanceTo+amount;
+            balances.put(msg.caller, balanceFrom);
+            balances.put(to,balanceTo);
+            Debug.print(debug_show(balanceFrom));
+            Debug.print(debug_show(balanceTo));
+            return "Success";
+        }else{
+            return "Insufient Funds"
+        }
+    };
+
 };
