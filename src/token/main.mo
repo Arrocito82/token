@@ -14,6 +14,11 @@ actor Token {
     private stable var balanceEntries:[(Principal, Nat)]=[];
     private var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
 
+    // Initialize balance only if it has not been initialized before
+    if(balances.size()==0){
+        balances.put(owner, totalSupply);
+    };
+
     public query func balanceOf(who : Principal) : async Nat {
         let balance : Nat = switch (balances.get(who)) {
             case null 0; // if null returns 0
