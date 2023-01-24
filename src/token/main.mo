@@ -5,15 +5,15 @@ import Text "mo:base/Text";
 import Iter "mo:base/Iter";
 
 actor Token {
-    Debug.print("Upgrading...");
+    // Debug.print("Upgrading...");
     let owner : Principal = Principal.fromText("6rfss-e2yvi-wswks-ynj2o-xbhj5-i5fhz-fdurr-m4fo7-mymgp-75rip-7ae");
     let totalSupply : Nat = 1000000000;
     let symbol : Text = "MELI";
-    stable var balanceEntries:[(Principal, Nat)]=[];
-    var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
 
-    // Initialize balance
-    balances.put(owner, totalSupply);
+    //variables related to balances, they are private because they shouldn't be modified outside this canaster
+    private stable var balanceEntries:[(Principal, Nat)]=[];
+    private var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
+
     public query func balanceOf(who : Principal) : async Nat {
         let balance : Nat = switch (balances.get(who)) {
             case null 0; // if null returns 0
@@ -76,6 +76,10 @@ actor Token {
         // restore balances
         balances:=HashMap.fromIter<Principal, Nat>(balanceEntries.vals(),1, Principal.equal, Principal.hash);
         balanceEntries:=[];
+        // Initialize balance only if it does not exist 
+        if(balances.size()==0){
+            balances.put(owner, totalSupply);
+        };
     };
 
 };
