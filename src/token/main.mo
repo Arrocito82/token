@@ -2,11 +2,14 @@ import Principal "mo:base/Principal";
 import HashMap "mo:base/HashMap";
 import Debug "mo:base/Debug";
 import Text "mo:base/Text";
+import Iter "mo:base/Iter";
 
 actor Token {
-    var owner : Principal = Principal.fromText("6rfss-e2yvi-wswks-ynj2o-xbhj5-i5fhz-fdurr-m4fo7-mymgp-75rip-7ae");
-    var totalSupply : Nat = 1000000000;
-    var symbol : Text = "MELI";
+    Debug.print("Upgrading...");
+    let owner : Principal = Principal.fromText("6rfss-e2yvi-wswks-ynj2o-xbhj5-i5fhz-fdurr-m4fo7-mymgp-75rip-7ae");
+    let totalSupply : Nat = 1000000000;
+    let symbol : Text = "MELI";
+    stable var balanceEntries:[(Principal, Nat)]=[];
     var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
 
     // Initialize balance
@@ -55,6 +58,24 @@ actor Token {
         }else{
             return "Insufient Funds"
         }
+    };
+
+    /**
+    System methods are use before and afer upgrading a canester.
+    In this case, we are using them because we need no persist the balances data
+    but it is not posible to persist that data using the stable keyword 
+    since HashMaps variables cannot be stabled.
+    Therefore, we need to save the balances data before the canaster is upgraded
+    and restore the data after it has been upgraded.
+    */
+    system func preupgrade(){
+        // backup balances
+        balanceEntries:=Iter.toArray(balances.entries());
+    };
+    system func postupgrade(){
+        // restore balances
+        balances:=HashMap.fromIter<Principal, Nat>(balanceEntries.vals(),1, Principal.equal, Principal.hash);
+        balanceEntries:=[];
     };
 
 };
