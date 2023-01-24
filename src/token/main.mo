@@ -1,6 +1,7 @@
 import Principal "mo:base/Principal";
 import HashMap "mo:base/HashMap";
 import Debug "mo:base/Debug";
+import Text "mo:base/Text";
 
 actor Token {
     var owner : Principal = Principal.fromText("6rfss-e2yvi-wswks-ynj2o-xbhj5-i5fhz-fdurr-m4fo7-mymgp-75rip-7ae");
@@ -24,16 +25,17 @@ actor Token {
 
     public shared(msg) func payOut():async Text{
         var amount:Nat= 10000;
-        Debug.print(debug_show(msg.caller));
+        // Debug.print(debug_show(msg.caller));
+        var feedback:Text="";
         switch (balances.get(msg.caller)) {
             case null{
-                balances.put(msg.caller, amount);
-                return "Success";
+                feedback:=await transfer(msg.caller, amount);
             }; // if null returns 0
             case (?result) {
-                return "You already claimed your free tokens.";
+                feedback:="You already claimed your free tokens.";
             }; // if result has a numeric value then it returns the value
         };
+        return feedback;
     };
 
     public shared(msg) func transfer(to: Principal, amount: Nat): async Text{
