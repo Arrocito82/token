@@ -8,8 +8,9 @@ function Transfer() {
   const [amount, setAmount]=useState(0);
 
   // ux variables
-  const [message, setMessage]= useState("Transfer");
+  const [message, setMessage]= useState("");
   const [isDisabled, setDisabled]=useState(false);
+  const [isHidden, setHidden]=useState(true);
 
   async function handleClick() {
     const principalId= Principal.fromText(idValue);
@@ -19,9 +20,7 @@ function Transfer() {
       const message= await token.transfer(principalId, transferAmount);
       setDisabled(false);
       setMessage(message);
-      setTimeout(()=>{
-        setMessage("Transfer");
-      }, 5000)
+      setHidden(false);
     }
   }
 
@@ -55,8 +54,9 @@ function Transfer() {
           </ul>
         </fieldset>
         <p className="trade-buttons">
-          <button id="btn-transfer" onClick={handleClick} disabled={isDisabled}>{message}</button>
+          <button id="btn-transfer" onClick={handleClick} disabled={isDisabled}>Transfer</button>
         </p>
+        <p hidden={isHidden}>{message}</p>
       </div>
     </div>
   );
