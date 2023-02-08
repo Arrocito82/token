@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import {token} from "./../../../declarations/token";
+import {token, canisterId, createActor} from "./../../../declarations/token";
 import {Principal} from "@dfinity/principal";
+import { AuthClient } from "@dfinity/auth-client";
 
-function Transfer() {
+function Transfer(props) {
   // tranfer variables
   const [idValue, setIdValue] =useState("");
   const [amount, setAmount]=useState(0);
@@ -11,13 +12,22 @@ function Transfer() {
   const [message, setMessage]= useState("");
   const [isDisabled, setDisabled]=useState(false);
   const [isHidden, setHidden]=useState(true);
-
   async function handleClick() {
+    
+    // HTTP Client to authenticate the user on ic 
+    const authClient=await AuthClient.create();
+    const identity=await authClient.getIdentity(); // authenticated user
+    // create actor with the identity provided
+    const authenticatedCanisterUser = createActor(canisterId,{
+          agentOptions: {identity},
+    });
+
+    // payee principal identity
     const principalId= Principal.fromText(idValue);
     const transferAmount= parseFloat(amount);
     if(transferAmount>0){
       setDisabled(true);
-      const message= await token.transfer(principalId, transferAmount);
+      const message= await authenticatedCanisterUser.transfer(principalId, transferAmount);
       setDisabled(false);
       setMessage(message);
       setHidden(false);

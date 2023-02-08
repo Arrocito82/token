@@ -19,7 +19,9 @@ const init = async () => {
 
   // This function handles app behavior after the user is logged in
   async function handleAuthenticated(authClient){
-    ReactDOM.render(<App />, document.getElementById("root"));    
+    const identity=await authClient.getIdentity();
+    const userPrincipal=identity._principal.toString();
+    ReactDOM.render(<App loggedInPrincipalId={userPrincipal} />, document.getElementById("root"));    
   }
 }
 

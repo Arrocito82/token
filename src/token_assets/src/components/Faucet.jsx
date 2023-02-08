@@ -3,7 +3,7 @@ import {token, canisterId, createActor} from "./../../../declarations/token"
 import {Principal} from "@dfinity/principal";
 import { AuthClient } from "@dfinity/auth-client";
 
-function Faucet() {
+function Faucet(props) {
   const [isDisabled, setDisabled]=useState(false);
   const [message, setMessage]= useState("Gimme gimme");
   async function handleClick(event) {
@@ -44,7 +44,7 @@ function Faucet() {
         </span>
         Faucet
       </h2>
-      <label>Get your free Meli tokens here! Claim 10,000 MELI tokens to your account.</label>
+      <label>Get your free Meli tokens here! Claim 10,000 MELI tokens to {props.principalId}</label>
       <p className="trade-buttons">
         <button id="btn-payout" onClick={handleClick} disabled={isDisabled}>
           {message}

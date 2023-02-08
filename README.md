@@ -1,3 +1,9 @@
+# DSURF
+### DSurf is a Decentralized App build with Motoku and React.js
+
+[See more](https://ikvz2-lyaaa-aaaag-abf4q-cai.ic0.app/) 
+
+
 # Check your Balance
 
 1. Find out your principal id:
